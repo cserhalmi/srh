@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/save.png</file>
+        <file>icons/exit.png</file>
+        <file>icons/logo.png</file>
+        <file>icons/minus.png</file>
+        <file>icons/off.png</file>
+        <file>icons/on.png</file>
+        <file>icons/plus.png</file>
+        <file>icons/sum.png</file>
+        <file>icons/synchronise.png</file>
+        <file>icons/clearlog.png</file>
+        <file>icons/clearlocaldbc.png</file>
+        <file>icons/record.png</file>
+        <file>icons/import.png</file>
+        <file>icons/export.png</file>
+        <file>icons/excel.png</file>
+    </qresource>
+</RCC>

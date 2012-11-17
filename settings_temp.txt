@@ -1,0 +1,52 @@
+#----------------------------------------------------------------
+# SOR FEJLÉCEK
+# Az adatbázis fájl nevében szereplõ üzletág név
+# és a megjelenített üzletág név összrendelése.
+#----------------------------------------------------------------
+rowhead:development                = FEJLESZTÉS
+rowhead:energetika                 = ENERGETIKA
+rowhead:konyveles                  = KÖNYVELÉS
+rowhead:nemzetkozipi               = NEMZETKÖZI PI
+rowhead:palyazatiro                = PÁLYÁZATÍRÓ
+rowhead:projectmanagement          = PROJEKTMENEDZSMENT
+rowhead:rendezvenyszervezes        = RENDEZVÉNYSZERVEZÉS
+rowhead:sales                      = SALES
+rowhead:belso                      = BELSÕ
+rowhead:termekfejlesztes_marketing = TERMÉKFEJLESZTÉS, MARKETING
+
+#----------------------------------------------------------------
+# SZÍNEK
+# Az értékek sorrenben a piros, zöld, kék összetevõket,
+# valamint az átlátszóságot jelentik.
+#----------------------------------------------------------------
+color:activeCursor                 = rgb(160,160,255,255)
+color:inactiveCursor               = rgb(180,180,180,255)
+color:archiveBackground            = rgb(255,255,187,255)
+color:weekEndBackground            = rgb(220,220,220,255)
+
+#----------------------------------------------------------------
+# MÉRETEK
+# A felhasználói felület elemeinek pixelekben 
+# megadott mérete.
+#----------------------------------------------------------------
+size:rowHeight                     = 20
+size:columnWidth                   = 80
+size:headerWidth                   = 180
+
+#----------------------------------------------------------------
+# IDõZÍTõ
+# Ciklikusan végrehajtott mûveletek ütemezése [ms].
+#----------------------------------------------------------------
+timer:checkRemote                  = 1000
+timer:autoRefresh                  = 120000
+
+#----------------------------------------------------------------
+# IMPORT
+# Az adatbázis sorainak összerendelése az importált,
+# tabulátorral elválasztott szövegfájlok soraival.
+# A sorok importálása az "import:column" oszlopban kezdõdik.
+# Az elsõ sor és az elsõ oszlop sorszáma 0.
+#----------------------------------------------------------------
+import:column                      = 1
+import:Jutalék                     = 3
+import:Adók                        = 1
