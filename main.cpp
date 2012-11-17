@@ -12,6 +12,7 @@
 #include <QLocale>
 #include <QDir>
 #include <QDesktopServices>
+#include <QMessageBox>
 
 QString         correctAdminKey = "AE3FF9435120484DB4BA03C17E02FD8E";
 QSettings       appSettings("CashFlow", "ApplicationSettings");
@@ -158,17 +159,25 @@ int main(int argc, char *argv[])
   QLocale::setDefault(QLocale(QLocale::Hungarian));
   QTextCodec::setCodecForTr(QTextCodec::codecForName("Windows-1250"));
   checkNextVersion();
-  mergeSettings();
-  splash = new SplashScreen(desktop);
-  splash->setUpdatesEnabled(false);
-  splash->container = desktop;
-  logBox = new QTextBrowser(NULL);
-  splash->message(QString("<b><font color=black>CashFlow %1</font><br></b>").arg(installedVersion), true);
-  splash->setUpdatesEnabled(true);
-  MainWindow w;
-  splash->container = &w;
-  w.show();
-  splash->finish();
-  return app.exec();
+  if (QFile(applicationPath).exists())
+  {
+    mergeSettings();
+    splash = new SplashScreen(desktop);
+    splash->setUpdatesEnabled(false);
+    splash->container = desktop;
+    logBox = new QTextBrowser(NULL);
+    splash->message(QString("<b><font color=black>CashFlow %1</font><br></b>").arg(installedVersion), true);
+    splash->setUpdatesEnabled(true);
+    MainWindow w;
+    splash->container = &w;
+    w.show();
+    splash->finish();
+    return app.exec();
+  }
+  else
+  {
+    QMessageBox::information(NULL, "CashFlow", "Az alkalmazás nem a hozzá rendelt útvonalon van.\r\nTelepítse újra, vagy helyezze vissza a telepített útvanalra.");
+    return 1;
+  }
 }
 

@@ -11,11 +11,12 @@ CONFIG   += static
 
 TARGET = srh
 TEMPLATE = app
+DESTDIR = ../srh/installer
 
 RESOURCES = icons.qrc
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
+    mainwindow.cpp \
     tabledata.cpp \
     tableview.cpp \
     tablemodel.cpp \
@@ -56,6 +57,3 @@ HEADERS  += mainwindow.h \
     setkey.h
 
 FORMS    +=
-
-OTHER_FILES += \
-    asdgasd.txt

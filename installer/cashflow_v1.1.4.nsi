@@ -18,6 +18,7 @@
   Var /GLOBAL instVersion
   Var /GLOBAL adminKeyRef
   Var /GLOBAL version
+  Var /GLOBAL qtversion
   
 !macro VerifyUserIsAdmin
 UserInfo::GetAccountType
@@ -76,6 +77,7 @@ ${EndIf}
  
 Function .onInit
   StrCpy $version "1.1.4"
+  StrCpy $qtversion "4.8.3"
   SetShellVarContext all
   ReadRegStr $0 HKCU "Software\CashFlow\ApplicationSettings" "DatabasePath"
   ReadRegStr $1 HKCU "Software\CashFlow\ApplicationSettings" "ApplicationPath"
@@ -113,12 +115,12 @@ Section "Alkalmazás"
   SectionIn 1 2 3
   SetOutPath $appDir
   File "..\settings_temp.txt"
-  File C:\QtSDK\Desktop\Qt\4.7.4\mingw\bin\QtGui4.dll
-  File C:\QtSDK\Desktop\Qt\4.7.4\mingw\bin\QtNetwork4.dll
-  File C:\QtSDK\Desktop\Qt\4.7.4\mingw\bin\QtCore4.dll
-  File C:\QtSDK\Desktop\Qt\4.7.4\mingw\bin\libgcc_s_dw2-1.dll
-  File C:\QtSDK\Desktop\Qt\4.7.4\mingw\bin\mingwm10.dll
-  File ..\..\srh-build-desktop\release\srh.exe
+  File C:\QtSDK\Desktop\Qt\4.8.3\bin\QtGui4.dll
+  File C:\QtSDK\Desktop\Qt\4.8.3\bin\QtNetwork4.dll
+  File C:\QtSDK\Desktop\Qt\4.8.3\bin\QtCore4.dll
+  File C:\QtSDK\Desktop\Qt\4.8.3\bin\libgcc_s_dw2-1.dll
+  File C:\QtSDK\Desktop\Qt\4.8.3\bin\mingwm10.dll
+  File srh.exe
   SetOutPath $appDir\icons
   File ..\icons\logo.ico
   File ..\icons\unlogo.ico

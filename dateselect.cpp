@@ -48,5 +48,6 @@ CalendarWidget::~CalendarWidget()
 
 void CalendarWidget::setBkColor(QDate date)
 {
+  Q_UNUSED(date);
   setStyleSheet("QCalendarWidget { selection-background-color: rgb(180,180,255) }");
 }
