@@ -15,7 +15,7 @@ public:
 protected:
   void                         resizeEvent(QResizeEvent * event);
 
-private slots:
+public slots:
   void                         updatePadding(int);
 
 };

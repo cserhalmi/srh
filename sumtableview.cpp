@@ -319,6 +319,9 @@ void SumTableView::loadNewYear(QString year)
   segmentList->blockSignals(false);
   archiveList->blockSignals(false);
   yearSelect->blockSignals(false);
+  segmentList->updatePadding(1);
+  archiveList->updatePadding(1);
+  yearSelect->updatePadding(1);
 
   D_SLOTCALL("loadNewYear")
   setUpdatesEnabled(true);

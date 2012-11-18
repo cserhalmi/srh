@@ -1,4 +1,4 @@
-srh-build-desktop*
+installer/database
 *.autosave
 *.bak
 *.tmp
