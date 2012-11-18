@@ -1,1 +1,5 @@
+srh-build-desktop*
+*.autosave
+*.bak
+*.tmp
 *.exe
