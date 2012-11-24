@@ -35,14 +35,13 @@ void Msg::saveStartupStateToLogFile()
   if (file.open(QIODevice::WriteOnly))
   {
     QString outtext;
-    outtext.append(tr("INDÍTÁS:______________ %1<br>").arg(QDateTime::currentDateTime().toString("yyyy/MMM/dd hh:mm:ss")));
-    outtext.append(tr("FELHASZNÁLÓ:__________ %1<br>").arg(userName));
-    outtext.append(tr("HELYI ADATBÁZIS:______ %1<br>").arg(localDatabasePath));
-    outtext.append(tr("KÖZPONTI ADATBÁZIS:___ %1<br>").arg(remoteDatabasePath));
-    outtext.append(tr("KAPCSOLAT:____________ %1<br>").arg(remote ? "központi" : "helyi"));
-    outtext.append(tr("HOZZÁFÉRÉS:___________ %1<br>").arg(adminKey == correctAdminKey ? "adminisztrátor" : "felhasználó"));
+    outtext.append(tr("INDÍTÁS:______________ %1<br>\r\n").arg(QDateTime::currentDateTime().toString("yyyy/MMM/dd hh:mm:ss")));
+    outtext.append(tr("FELHASZNÁLÓ:__________ %1<br>\r\n").arg(userName));
+    outtext.append(tr("HELYI ADATBÁZIS:______ %1<br>\r\n").arg(localDatabasePath));
+    outtext.append(tr("KÖZPONTI ADATBÁZIS:___ %1<br>\r\n").arg(remoteDatabasePath));
+    outtext.append(tr("KAPCSOLAT:____________ %1<br>\r\n").arg(remote ? "központi" : "helyi"));
+    outtext.append(tr("HOZZÁFÉRÉS:___________ %1<br>\r\n").arg(adminKey == correctAdminKey ? "adminisztrátor" : "felhasználó"));
     file.write(QVariant(outtext).toByteArray());
-    file.write("\r\n");
     file.close();
   }
   else

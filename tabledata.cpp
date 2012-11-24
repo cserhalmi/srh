@@ -243,6 +243,45 @@ void TableData::getRowHeader(stringMatrix& data, QVector<QString>& calculations,
   }
 }
 
+// get properties form entry list
+bool TableData::getValueProperties(int row, int column, QString& date, QString& value, QString& user)
+{
+  int e = entries[row].count();
+  if (e == 0) return false;
+  QStringList p;
+  int col;
+  do
+  {
+    e--;
+    QString s = entries[row].at(e);
+    s.replace("[", ""); s.replace("]", "");
+    p = s.split(";");
+    col = p[1].toInt();
+    date = p[0];
+    value = p[2];
+    user = p[3];
+  } while ((e>0) && (col!=column));
+  return e >= 0 ? true : false;
+}
+
+void TableData::checkData(void)
+{
+  for (int c=0; c<columns; c++)
+  {
+    for (int r=0; r<rows; r++)
+    {
+      if(!data.at(r).at(c).isEmpty())
+      {
+        QString euser;
+        QString evalue;
+        QString edatejulian;
+        if (!getValueProperties(r, c, edatejulian, evalue, euser)) Msg::log(MSG_ERROR, tr("adatbázis hiba - nincs bejegyzés az értékhez (%1,%2) cellában").arg(r).arg(c));
+        if (evalue != data[r][c]) Msg::log(MSG_ERROR, tr("adatbázis hiba - (%1,%2) cella utolsó bejegyzése nem egyezik az értékkel (%3)").arg(r).arg(c).arg(evalue));
+      }
+    }
+  }
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // PUBLIC MEMBERS
 ///////////////////////////////////////////////////////////////////////////////
@@ -263,6 +302,7 @@ bool TableData::loadData(void)
     getColumnHeader();
     getEntryLog(data, entries);
     getRowHeader(data, calculations, rowHeader);
+    checkData();
     emit tableDataChanged(this);
     return true;
   }
@@ -444,6 +484,7 @@ bool TableData::mergeData(void)
     changed = true;
     saveData();
   }
+  checkData();
   return true;
 }
 

@@ -319,10 +319,12 @@ void MainWindow::restoreStatus(void)
   adminKey              = appSettings.value("key", "00000000000000000000000000000000").toString();
   localDatabasePath     = QString("%1/database").arg(QCoreApplication::applicationDirPath());
   archiveDatabasePath   = QString("%1/archive").arg(remoteDatabasePath);
+  localArchiveDatabasePath = QString("%1/archive").arg(localDatabasePath); // for admins only
   importExportPath      = QString("%1/export").arg(applicationPath);
   helpFile              = QString("%1/help/index.htm").arg(applicationPath);
   logFile               = QString("%1/log.txt").arg(applicationPath);
   createPath(localDatabasePath);
+  if (adminKey == correctAdminKey) createPath(localArchiveDatabasePath);
   createPath(importExportPath);
 }
 

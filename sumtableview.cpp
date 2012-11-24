@@ -86,9 +86,6 @@ SumTableView::SumTableView(QWidget *parent, QGridLayout* layout) : QTableView(pa
   calendar->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
   logBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-  setTabOrder(yearSelect, segmentList);
-  setTabOrder(segmentList, archiveList);
-
   horizontalHeader()->setResizeMode(QHeaderView::Stretch);
   horizontalHeader()->setToolTip(tr("Hónap figyelembevétele"));
   horizontalHeader()->setSelectionMode(QAbstractItemView::NoSelection);
@@ -157,6 +154,8 @@ void SumTableView::updateGeometry(void)
   verticalHeader()->setFixedWidth(VHEADERWIDTH);
   int hasSumRow = tableViews.count() > 1 ? 1 : 0;
   setFixedHeight((sumTableModel->sumTableData->getRows()+hasSumRow)*SROWHEIGHT + frameWidth());
+  setTabOrder(yearSelect, segmentList);
+  setTabOrder(segmentList, archiveList);
   repaint();
 }
 
@@ -384,21 +383,50 @@ bool SumTableView::getDataFiles(QString year)
 void SumTableView::getArchiveFiles(void)
 {
   archiveNames.clear();
-  QStringList dirNames;
-  QDir archiveDir(archiveDatabasePath);
-  dirNames = archiveDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
-  for (int d=0; d<dirNames.count(); d++)
-  {
-    QString dirName = QString("%1/%2").arg(archiveDatabasePath).arg(dirNames[d]);
-    QDir dir(dirName);
-    QStringList files = dir.entryList(QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
-    for (int f=0; f<files.count(); f++)
+  QStringList localFiles;
+  QStringList files(getFileList(archiveDatabasePath, "dat", true));
+  if (adminKey == correctAdminKey)
+  { // check deleted remote files
+    localFiles = getFileList(localArchiveDatabasePath, "dat", true);
+    for (int f=0; f<localFiles.count(); f++)
     {
-      FileAccess fa(files[f]);
-      if (((adminKey == correctAdminKey) || // archive files are visible when registry contains admin key - no need to step into admin mode
-           (fa.key == appSettings.value(QString("keys/%1").arg(fa.segmentName), "").toString())))
-      {
-        archiveNames.append(QString("%1/%2").arg(dirName).arg(files[f]));
+      QString localToRemote = QString(localFiles[f]).replace(localArchiveDatabasePath, archiveDatabasePath);
+      if (!files.contains(localToRemote))
+        Msg::log(MSG_ERROR, tr("%1 törölve lett az archívumból.").arg(localToRemote));
+    }
+  }
+  for (int f=0; f<files.count(); f++)
+  {
+    FileAccess fa(files[f]);
+    if (((adminKey == correctAdminKey) || // archive files are visible when registry contains admin key - no need to step into admin mode
+         (fa.key == appSettings.value(QString("keys/%1").arg(fa.segmentName), "").toString())))
+    {
+      archiveNames.append(files[f]);
+      if (adminKey == correctAdminKey)
+      { // check if archive files are modified
+        QString remoteToLocal = QString(localFiles[f]).replace(archiveDatabasePath, localArchiveDatabasePath);
+        if (!QFile(remoteToLocal).exists())
+        {
+          if (QFile(files[f]).copy(remoteToLocal))
+          {
+            Msg::log(MSG_INFO, tr("%1 helyi másolata elkészült").arg(files[f]));
+          }
+        }
+        else
+        {
+          FileAccess remoteArchive(files[f]);
+          FileAccess localArchive(remoteToLocal);
+          QByteArray ra;
+          QByteArray la;
+          remoteArchive.read();
+          localArchive.read();
+          remoteArchive.get(ra);
+          localArchive.get(la);
+          if (ra != la)
+          {
+            Msg::log(MSG_ERROR, tr("%1 megváltozott").arg(files[f]));
+          }
+        }
       }
     }
   }

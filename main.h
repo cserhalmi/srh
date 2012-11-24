@@ -7,6 +7,7 @@
 #include <QSettings>
 #include <QDesktopWidget>
 #include <QTextBrowser>
+#include <QStringList>
 
 #define MAXTABLEROWS          50
 #define INITWIDTH            800
@@ -37,6 +38,7 @@ extern QString         applicationPath;
 extern QString         remoteDatabasePath;
 extern QString         localDatabasePath;
 extern QString         archiveDatabasePath;
+extern QString         localArchiveDatabasePath;
 extern QString         importExportPath;
 extern QString         installedVersion;
 extern QString         installerPath;
@@ -79,5 +81,7 @@ extern int             autoRefresh;
 extern TextEdit*       settingsWindow;
 extern TextEdit*       logWindow;
 extern TextEdit*       tableEditWindow;
+
+extern QStringList getFileList(QString folder, QString filter, bool recursive);
 
 #endif // MAIN_H

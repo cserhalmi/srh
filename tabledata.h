@@ -23,6 +23,7 @@ public:
   QVector<long long int>& getMonthSums(void);
   void                    convertFileToData(QByteArray& filedata, stringMatrix& matrix);
   bool                    mergeData(void);
+  bool                    getValueProperties(int row, int column, QString& date, QString& value, QString& user);
 
   stringMatrix            data;           // data matrix
   stringMatrix            entries;        // log of cell edits
@@ -53,6 +54,7 @@ private:
   void                    getRowHeader(stringMatrix& data, QVector<QString>& calculations, QVector<QString>& rowHeader);
   void                    getEntryLog(stringMatrix& data, stringMatrix& entries);
   QString                 createArchiveName(QString filename);
+  void                    checkData(void);
   QString                 archiveFile;
   QVector<long long int>  monthSums;
   bool                    changed;

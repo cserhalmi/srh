@@ -29,7 +29,7 @@ SetKey::SetKey(QWidget *parent, QString* key, bool* ok) : QMainWindow(parent)
   QValidator*  validator  = new QRegExpValidator(QRegExp("[0-9A-Fa-f]{32}"), this);
 
 
-  buttonSetKey  = new QPushButton("&Beállítás", this);
+  buttonSetKey  = new QPushButton(tr("&Beállítás"), this);
   valueEdit     = new QLineEdit(this);
 
   setCentralWidget(mainWidget);

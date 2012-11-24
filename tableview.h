@@ -33,7 +33,6 @@ private:
 
   int                    viewPortColumns(void);
   int                    viewPortRows(void);
-  bool                   getValueProperties(int row, int column, QString& date, QString& value, QString& user);
 
 protected:
   void                   keyPressEvent(QKeyEvent *event);

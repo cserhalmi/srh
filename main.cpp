@@ -13,6 +13,7 @@
 #include <QDir>
 #include <QDesktopServices>
 #include <QMessageBox>
+#include <QDirIterator>
 
 QString         correctAdminKey = "AE3FF9435120484DB4BA03C17E02FD8E";
 QSettings       appSettings("CashFlow", "ApplicationSettings");
@@ -25,6 +26,7 @@ QString         applicationPath;
 QString         localDatabasePath;
 QString         remoteDatabasePath;
 QString         archiveDatabasePath;
+QString         localArchiveDatabasePath;
 QString         importExportPath;
 QString         installerPath;
 QString         installedVersion;
@@ -145,6 +147,29 @@ void mergeSettings(void)
   Settings::putSettingsFile();
   Settings::setSettings();
   QFile(newSettingsFile).remove();
+}
+
+//
+// service for directory file list
+//
+QStringList getFileList(QString folder, QString suffix, bool recursive)
+{
+  QStringList fileList;
+  QString path(QDir(folder).absolutePath());
+  QDirIterator dirIt(path, QDirIterator::Subdirectories);
+  while (dirIt.hasNext())
+  {
+    dirIt.next();
+    if ((recursive) || (dirIt.fileInfo().absolutePath() == path))
+    {
+      QString file(dirIt.fileInfo().absoluteFilePath());
+      if (QFileInfo(dirIt.filePath()).isFile())
+        if (QFileInfo(dirIt.filePath()).suffix() == suffix)
+          fileList.append(dirIt.filePath());
+    }
+  }
+  qSort(fileList);
+  return fileList;
 }
 
 //
