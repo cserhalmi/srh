@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     math.cpp \
     combobox.cpp \
     search.cpp \
-    setkey.cpp
+    setkey.cpp \
+    pathes.cpp
 
 HEADERS  += mainwindow.h \
     tabledata.h \
@@ -54,6 +55,7 @@ HEADERS  += mainwindow.h \
     main.h \
     combobox.h \
     search.h \
-    setkey.h
+    setkey.h \
+    pathes.h
 
 FORMS    +=

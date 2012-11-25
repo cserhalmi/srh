@@ -3,6 +3,7 @@
 
 #include "splashscreen.h"
 #include "textedit.h"
+#include "pathes.h"
 #include <QString>
 #include <QSettings>
 #include <QDesktopWidget>
@@ -30,6 +31,7 @@
 #define GETLOUD        blockSignals(__bs);
 
 extern QSettings       appSettings;
+extern Pathes          pth;
 extern SplashScreen*   splash;
 extern QDesktopWidget* desktop;
 extern QTextBrowser*   logBox;

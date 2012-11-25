@@ -17,6 +17,7 @@
 
 QString         correctAdminKey = "AE3FF9435120484DB4BA03C17E02FD8E";
 QSettings       appSettings("CashFlow", "ApplicationSettings");
+Pathes          pth;
 bool            adminAccess = false;
 SplashScreen*   splash = NULL;
 QDesktopWidget* desktop = NULL;
@@ -184,7 +185,7 @@ int main(int argc, char *argv[])
   QLocale::setDefault(QLocale(QLocale::Hungarian));
   QTextCodec::setCodecForTr(QTextCodec::codecForName("Windows-1250"));
   checkNextVersion();
-  if (QFile(applicationPath).exists())
+  if (pth.checkPathes())
   {
     mergeSettings();
     splash = new SplashScreen(desktop);
@@ -201,7 +202,7 @@ int main(int argc, char *argv[])
   }
   else
   {
-    QMessageBox::information(NULL, "CashFlow", "Az alkalmazás nem a hozzá rendelt útvonalon van.\r\nTelepítse újra, vagy helyezze vissza a telepített útvanalra.");
+    QMessageBox::information(NULL, "CashFlow", "Az alkalmazás valamelyik útvonala érvénytelen.");
     return 1;
   }
 }

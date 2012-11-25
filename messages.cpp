@@ -35,12 +35,11 @@ void Msg::saveStartupStateToLogFile()
   if (file.open(QIODevice::WriteOnly))
   {
     QString outtext;
-    outtext.append(tr("INDÍTÁS:______________ %1<br>\r\n").arg(QDateTime::currentDateTime().toString("yyyy/MMM/dd hh:mm:ss")));
-    outtext.append(tr("FELHASZNÁLÓ:__________ %1<br>\r\n").arg(userName));
-    outtext.append(tr("HELYI ADATBÁZIS:______ %1<br>\r\n").arg(localDatabasePath));
-    outtext.append(tr("KÖZPONTI ADATBÁZIS:___ %1<br>\r\n").arg(remoteDatabasePath));
-    outtext.append(tr("KAPCSOLAT:____________ %1<br>\r\n").arg(remote ? "központi" : "helyi"));
-    outtext.append(tr("HOZZÁFÉRÉS:___________ %1<br>\r\n").arg(adminKey == correctAdminKey ? "adminisztrátor" : "felhasználó"));
+    outtext.append(tr("INDÍTÁS:________________ %1<br>\r\n").arg(QDateTime::currentDateTime().toString("yyyy/MMM/dd hh:mm:ss")));
+    outtext.append(tr("FELHASZNÁLÓ:____________ %1<br>\r\n").arg(userName));
+    outtext.append(tr("KAPCSOLAT:______________ %1<br>\r\n").arg(remote ? "központi" : "helyi"));
+    outtext.append(tr("HOZZÁFÉRÉS:_____________ %1<br>\r\n").arg(adminKey == correctAdminKey ? "adminisztrátor" : "felhasználó"));
+    outtext.append(pth.getLog());
     file.write(QVariant(outtext).toByteArray());
     file.close();
   }
