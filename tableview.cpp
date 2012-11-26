@@ -30,7 +30,7 @@ TableView::TableView(QWidget *parent, QString& localfile) : QTableView(parent)
 
   hideTableView();
   localFile     = localfile;
-  remoteFile    = QString(localfile).replace(localDatabasePath, remoteDatabasePath);
+  remoteFile    = QString(localfile).replace(pth.pathes[PTH_localDatabase], pth.pathes[PTH_remoteDatabase]);
   tableModel    = new TableModel(this, localfile, remoteFile);
   cornerButton  = new QPushButton(this);
   itemDelegate  = new ItemDelegate(this);

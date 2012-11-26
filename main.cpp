@@ -23,18 +23,8 @@ SplashScreen*   splash = NULL;
 QDesktopWidget* desktop = NULL;
 QTextBrowser*   logBox = NULL;
 QString         userName;
-QString         applicationPath;
-QString         localDatabasePath;
-QString         remoteDatabasePath;
-QString         archiveDatabasePath;
-QString         localArchiveDatabasePath;
-QString         importExportPath;
-QString         installerPath;
 QString         installedVersion;
-QString         settingsFile;
-QString         helpFile;
 QString         adminKey;
-QString         logFile;
 
 QFont           tableHeaderFont("Tahoma",   8);
 QFont           logWindowFont(  "Courier",  8);
@@ -100,13 +90,13 @@ QString getUserName(void)
 void checkNextVersion(void)
 {
   installedVersion      = appSettings.value("InstalledVersion", "1.0.0").toString();
-  applicationPath       = appSettings.value("ApplicationPath", "C:/Program Files/CashFlow").toString().replace("\\", "/");
-  remoteDatabasePath    = appSettings.value("DatabasePath", "L:/CashFlow/database").toString().replace("\\", "/");
-  installerPath         = remoteDatabasePath;
-  installerPath.remove(QRegExp("/[^/]+$"));
+  pth.pathes[PTH_application]       = appSettings.value("ApplicationPath", "C:/Program Files/CashFlow").toString().replace("\\", "/");
+  pth.pathes[PTH_remoteDatabase]    = appSettings.value("DatabasePath", "L:/CashFlow/database").toString().replace("\\", "/");
+  pth.pathes[PTH_installer]         = pth.pathes[PTH_remoteDatabase];
+  pth.pathes[PTH_installer].remove(QRegExp("/[^/]+$"));
   QStringList nameFilter;
   nameFilter << "cashflow_v*.exe";
-  QDir databaseDir(installerPath);
+  QDir databaseDir(pth.pathes[PTH_installer]);
   QStringList fileList = databaseDir.entryList(nameFilter, QDir::Files, QDir::Unsorted);
   QRegExp versionPattern("cashflow_v(\\d\\.\\d\\.\\d)\\.exe");
   QList<QString> versionList = installedVersion.split(".");
@@ -140,9 +130,9 @@ void removeSettings(void)
 //
 void mergeSettings(void)
 {
-  settingsFile = QString("%1/settings.txt").arg(applicationPath);
-  QString newSettingsFile = QString("%1/settings_temp.txt").arg(applicationPath);
-  Settings::getSettingsFile(settingsFile);
+  QString newSettingsFile = pth.pathes[FLE_settings];
+  newSettingsFile.replace(".txt","_temp.txt");
+  Settings::getSettingsFile(pth.pathes[FLE_settings]);
   Settings::getSettingsFile(newSettingsFile);
   removeSettings();
   Settings::putSettingsFile();

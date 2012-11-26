@@ -31,7 +31,7 @@ Msg::Msg(QWidget* parent)
 
 void Msg::saveStartupStateToLogFile()
 {
-  QFile file(logFile);
+  QFile file(pth.pathes[FLE_log]);
   if (file.open(QIODevice::WriteOnly))
   {
     QString outtext;
@@ -45,14 +45,14 @@ void Msg::saveStartupStateToLogFile()
   }
   else
   {
-    Msg::log(MSG_ERROR, tr("a %1 napló fájl írása sikertelen").arg(logFile));
+    Msg::log(MSG_ERROR, tr("a %1 napló fájl írása sikertelen").arg(pth.pathes[FLE_log]));
   }
 }
 
 bool Msg::clearLog()
 {
   logBox->clear();
-  if (QFile(logFile).remove())
+  if (QFile(pth.pathes[FLE_log]).remove())
   {
     Msg::saveStartupStateToLogFile();
     return true;
@@ -86,10 +86,10 @@ void Msg::log(msgLevel type, QString text)
   }
   if (logBox != NULL)
   {
-    text.replace(localDatabasePath, "helyi ");
-    text.replace(remoteDatabasePath, "központi ");
+    text.replace(pth.pathes[PTH_localDatabase], "helyi ");
+    text.replace(pth.pathes[PTH_remoteDatabase], "központi ");
     QString outtext = QString("<font color=\"%1\">[%2]</font> %3<br>").arg(typeColor).arg(QDateTime::currentDateTime().toString("yyyy/MMM/dd hh:mm:ss")).arg(text);
-    QFile file(logFile);
+    QFile file(pth.pathes[FLE_log]);
     if (!fileLoggingSuppressed)
     {
       if (file.open(QIODevice::Append))
@@ -100,7 +100,7 @@ void Msg::log(msgLevel type, QString text)
       }
       else
       {
-        Msg::log(MSG_ERROR, tr("a %1 napló fájl írása sikertelen").arg(logFile));
+        Msg::log(MSG_ERROR, tr("a %1 napló fájl írása sikertelen").arg(pth.pathes[FLE_log]));
       }
     }
     if ((outputLogWarningsFlag && (type == MSG_WARNING)) ||
@@ -235,10 +235,10 @@ int Msg::pshow(msgLevel level, msgType message)
 
 int Msg::show(msgLevel level, msgType message, QString text)
 {
-  if (!localDatabasePath.isEmpty())
-    text.replace(localDatabasePath, "helyi ");
-  if (!remoteDatabasePath.isEmpty())
-    text.replace(remoteDatabasePath, "központi ");
+  if (!pth.pathes[PTH_localDatabase].isEmpty())
+    text.replace(pth.pathes[PTH_localDatabase], "helyi ");
+  if (!pth.pathes[PTH_remoteDatabase].isEmpty())
+    text.replace(pth.pathes[PTH_remoteDatabase], "központi ");
   QStringList sl = QStringList(text);
   return show(level, message, &sl);
 }

@@ -130,12 +130,12 @@ QString TableData::createArchiveName(QString filename)
 {
   QDate cd = QDate::currentDate();
   QString d = QString("%1/%2_%3_%4/")
-      .arg(archiveDatabasePath)
+      .arg(pth.pathes[PTH_archiveDatabase])
       .arg((QString("00%1").arg(cd.year())).right(4))
       .arg((QString("0%1").arg(cd.month())).right(2))
       .arg((QString("0%1").arg(cd.day())).right(2));
   if ((!QFileInfo(d).isDir()) &&
-      (QDir(remoteDatabasePath).exists()))
+      (QDir(pth.pathes[PTH_remoteDatabase]).exists()))
   {
     QDir dir;
     if (!dir.mkpath(d))

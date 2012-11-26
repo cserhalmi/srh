@@ -152,7 +152,7 @@ void Settings::putSettingsFile(void)
     }
     settingsText = QString("%1%2%3\r\n").arg(settingsText).arg(header).arg(body).remove(QRegExp("^\\s+"));
   }
-  FileAccess file(settingsFile);
+  FileAccess file(pth.pathes[FLE_settings]);
   QByteArray ba = QVariant(settingsText).toByteArray();
   file.put(ba);
   file.write();

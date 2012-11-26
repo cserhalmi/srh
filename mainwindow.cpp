@@ -90,10 +90,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
   logBox->setLineWrapMode(QTextEdit::NoWrap);
   userNameLabel->setContentsMargins(2,0,2,0);
   userNameLabel->setToolTip(tr("Felhasználó"));
-  remoteDatabasePathLabel->setText(remoteDatabasePath);
+  remoteDatabasePathLabel->setText(pth.pathes[PTH_remoteDatabase]);
   remoteDatabasePathLabel->setContentsMargins(2,0,2,0);
   remoteDatabasePathLabel->setToolTip(tr("Távoli adatbázis"));
-  localDatabasePathLabel->setText(localDatabasePath);
+  localDatabasePathLabel->setText(pth.pathes[PTH_localDatabase]);
   localDatabasePathLabel->setContentsMargins(2,0,2,0);
   localDatabasePathLabel->setToolTip(tr("Helyi adatbázis"));
   statusBar->setContentsMargins(2,0,2,0);
@@ -209,7 +209,7 @@ void MainWindow::setMenuStatus(void)
 void MainWindow::checkRemoteDatabase(void)
 {
   synchroniseTimer->blockSignals(!isActiveWindow());
-  if (QDir(remoteDatabasePath).isReadable())
+  if (QDir(pth.pathes[PTH_remoteDatabase]).isReadable())
   {
     remote = true;
     if (autoUpdateFlag)
@@ -317,15 +317,6 @@ void MainWindow::restoreStatus(void)
   summaryVisible = settings.value("flags/summaryVisible", "true").toBool();
   // application settings
   adminKey              = appSettings.value("key", "00000000000000000000000000000000").toString();
-  localDatabasePath     = QString("%1/database").arg(QCoreApplication::applicationDirPath());
-  archiveDatabasePath   = QString("%1/archive").arg(remoteDatabasePath);
-  localArchiveDatabasePath = QString("%1/archive").arg(localDatabasePath); // for admins only
-  importExportPath      = QString("%1/export").arg(applicationPath);
-  helpFile              = QString("%1/help/index.htm").arg(applicationPath);
-  logFile               = QString("%1/log.txt").arg(applicationPath);
-  createPath(localDatabasePath);
-  if (adminKey == correctAdminKey) createPath(localArchiveDatabasePath);
-  createPath(importExportPath);
 }
 
 void MainWindow::saveStatus(void)
@@ -576,10 +567,10 @@ void MainWindow::setDatabasePath()
     for (int p=0; p<el.count(); p++) {if (el[p].contains(QRegExp("\\d+\\.\\d+\\.[^\\.]+\\.dat"))) {datCount++;}}
     if (datCount > 0)
     {
-      remoteDatabasePath = path;
-      archiveDatabasePath = QString("%1/archive").arg(remoteDatabasePath);
-      appSettings.setValue("DatabasePath", remoteDatabasePath.replace("/","\\"));
-      remoteDatabasePathLabel->setText(remoteDatabasePath);
+      pth.pathes[PTH_remoteDatabase] = path;
+      pth.pathes[PTH_archiveDatabase] = QString("%1/archive").arg(pth.pathes[PTH_remoteDatabase]);
+      appSettings.setValue("DatabasePath", pth.pathes[PTH_remoteDatabase].replace("/","\\"));
+      remoteDatabasePathLabel->setText(pth.pathes[PTH_remoteDatabase]);
       sumTableView->loadNewYear(QVariant(QDate::currentDate().year()).toString());
       Msg::log(MSG_INFO, tr("a kiválasztott %1 útvonalon %2 adatbázis található").arg(path).arg(datCount));
     }
@@ -594,14 +585,14 @@ void MainWindow::setDatabasePath()
 void MainWindow::editSettings()
 {
   this->repaint();
-  FileAccess file(settingsFile);
+  FileAccess file(pth.pathes[FLE_settings]);
   if (!file.read())
   {
     if (!file.write())
-      Msg::show(MSG_ERROR, MSG_FILE_SAVE, settingsFile);
+      Msg::show(MSG_ERROR, MSG_FILE_SAVE, pth.pathes[FLE_settings]);
   }
-  settingsWindow->setFile(settingsFile);
-  settingsWindow->setWindowTitle(settingsFile);
+  settingsWindow->setFile(pth.pathes[FLE_settings]);
+  settingsWindow->setWindowTitle(pth.pathes[FLE_settings]);
   settingsWindow->setGeometry(QRect(mapToGlobal(QPoint((frameGeometry().width() - 600)/2,
                                                        (frameGeometry().height()- 500)/2)),
                                            QSize(600, 500)));
@@ -642,9 +633,9 @@ void MainWindow::clearLog()
   {
     this->repaint();
     if (Msg::clearLog())
-      Msg::log(MSG_WARNING, QString("%1 napló fájl törölve").arg(logFile));
+      Msg::log(MSG_WARNING, QString("%1 napló fájl törölve").arg(pth.pathes[FLE_log]));
     else
-      Msg::log(MSG_WARNING, QString("%1 napló fájl törlése sikertelen").arg(logFile));
+      Msg::log(MSG_WARNING, QString("%1 napló fájl törlése sikertelen").arg(pth.pathes[FLE_log]));
   }
 }
 
@@ -679,7 +670,7 @@ void MainWindow::importToLocalDatabase()
     QFileDialog* fileDialog = new QFileDialog(this);
     fileDialog->setNameFilter(tr("Szövegfájl (*.txt *.csv)"));
     fileDialog->setDefaultSuffix("txt");
-    fileDialog->setDirectory(importExportPath);
+    fileDialog->setDirectory(pth.pathes[PTH_importExport]);
     fileDialog->setAcceptMode(QFileDialog::AcceptOpen);
     fileDialog->setFileMode(QFileDialog::ExistingFile);
     if (fileDialog->exec())
@@ -759,7 +750,7 @@ void MainWindow::exportFromLocalDatabase()
   QFileDialog* fileDialog = new QFileDialog(this);
   fileDialog->setNameFilter(tr("Szövegfájl (*.txt *.csv)"));
   fileDialog->setDefaultSuffix("txt");
-  fileDialog->setDirectory(importExportPath);
+  fileDialog->setDirectory(pth.pathes[PTH_importExport]);
   fileDialog->setAcceptMode(QFileDialog::AcceptSave);
   fileDialog->setFileMode(QFileDialog::AnyFile);
   fileDialog->selectFile(QFileInfo(QString(sumTableView->activeTableView->localFile)).fileName().replace(".dat",".txt"));
@@ -839,11 +830,11 @@ void MainWindow::generateDbc()
   QFileDialog* fileDialog = new QFileDialog(this);
   fileDialog->setNameFilter(tr("Adatbázis (*.dat)"));
   fileDialog->setDefaultSuffix("dat");
-  fileDialog->setDirectory(remoteDatabasePath);
+  fileDialog->setDirectory(pth.pathes[PTH_remoteDatabase]);
   fileDialog->setAcceptMode(QFileDialog::AcceptSave);
   fileDialog->setFileMode(QFileDialog::AnyFile);
   QString newFile = QString("%1/%2.%3.uj_uzletag.dat").
-                    arg(remoteDatabasePath).
+                    arg(pth.pathes[PTH_remoteDatabase]).
                     arg(sumTableView->yearSelect->currentText()).
                     arg(QString("00%1").
                     arg(sumTableView->tableViews.count()+1).right(2));
@@ -873,7 +864,7 @@ void MainWindow::generateNextYearDbcs()
   splash->message(tr("%1 év adatbázisainak\r\ngenerálása folyamatban").arg(nyear), true);
   if (sumTableView->fileNames.count() < 1)
   {
-    QString newFile = QString("%1/%2.01.uzletag.dat").arg(remoteDatabasePath).arg(nyear);
+    QString newFile = QString("%1/%2.01.uzletag.dat").arg(pth.pathes[PTH_remoteDatabase]).arg(nyear);
     sumTableView->fileNames.append(newFile);
     FileAccess f(newFile);
     QByteArray ba;
@@ -899,7 +890,7 @@ void MainWindow::generateNextYearDbcs()
       {
         QString newFile = sumTableView->fileNames[f];
         newFile.replace(cyearPattern, nyearPattern);
-        newFile.replace(localDatabasePath, remoteDatabasePath);
+        newFile.replace(pth.pathes[PTH_localDatabase], pth.pathes[PTH_remoteDatabase]);
         if (QFile::copy(sumTableView->fileNames[f], newFile))
         { // file not yet exists
           FileAccess file(newFile, this);
@@ -962,15 +953,15 @@ void MainWindow::jumpActDate(void)
 void MainWindow::showHelp(void)
 {
   this->repaint();
-  if (QFileInfo(helpFile).exists())
+  if (QFileInfo(pth.pathes[FLE_help]).exists())
   {
     splash->message("leírás\r\nmegnyitása folyamatban", true);
-    QDesktopServices::openUrl(QUrl(helpFile.prepend( "file:///" )));
+    QDesktopServices::openUrl(QUrl(pth.pathes[FLE_help].prepend( "file:///" )));
     splash->finish();
   }
   else
   {
-    Msg::log(MSG_ERROR, tr("%1 nem elérhetõ, vagy már meg van nyitva").arg(helpFile));
+    Msg::log(MSG_ERROR, tr("%1 nem elérhetõ, vagy már meg van nyitva").arg(pth.pathes[FLE_help]));
   }
 }
 
@@ -1062,7 +1053,7 @@ void MainWindow::toggleJumpThisDay(void)
 void MainWindow::updateSettings()
 {
   settings.clear();
-  Settings::getSettingsFile(settingsFile);
+  Settings::getSettingsFile(pth.pathes[FLE_settings]);
   Settings::setSettings();
   sumTableView->updateUserSettings();
   nextSynchronisationInSecs = AUTOUPDATEPERIOD;
@@ -1098,7 +1089,7 @@ void MainWindow::openExcelProject()
   QFileDialog* fileDialog = new QFileDialog(this);
   fileDialog->setNameFilter(tr("Excel (*.xlsm)"));
   fileDialog->setDefaultSuffix("xlsm");
-  fileDialog->setDirectory(localDatabasePath);
+  fileDialog->setDirectory(pth.pathes[PTH_localDatabase]);
   fileDialog->setAcceptMode(QFileDialog::AcceptOpen);
   fileDialog->setFileMode(QFileDialog::AnyFile);
   if (fileDialog->exec())
@@ -1122,8 +1113,8 @@ void MainWindow::openExcelProject()
 
 void MainWindow::showLog()
 {
-  logWindow->setFile(logFile);
-  logWindow->setWindowTitle(logFile);
+  logWindow->setFile(pth.pathes[FLE_log]);
+  logWindow->setWindowTitle(pth.pathes[FLE_log]);
   logWindow->setGeometry(QRect(mapToGlobal(QPoint((frameGeometry().width() - 1000)/2,
                                                   (frameGeometry().height()- 500)/2)),
                                            QSize(1000, 500)));

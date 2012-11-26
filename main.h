@@ -36,17 +36,7 @@ extern SplashScreen*   splash;
 extern QDesktopWidget* desktop;
 extern QTextBrowser*   logBox;
 extern QString         userName;
-extern QString         applicationPath;
-extern QString         remoteDatabasePath;
-extern QString         localDatabasePath;
-extern QString         archiveDatabasePath;
-extern QString         localArchiveDatabasePath;
-extern QString         importExportPath;
 extern QString         installedVersion;
-extern QString         installerPath;
-extern QString         logFile;
-extern QString         settingsFile;
-extern QString         helpFile;
 extern QString         adminKey;
 extern QString         correctAdminKey;
 

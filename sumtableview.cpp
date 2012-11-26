@@ -342,8 +342,8 @@ bool SumTableView::getDataFiles(QString year)
   nameFilter << "*.dat";
   QVector<int> dataFileYears;
   QString path;
-  if (remote) path = remoteDatabasePath;
-  else path = localDatabasePath;
+  if (remote) path = pth.pathes[PTH_remoteDatabase];
+  else path = pth.pathes[PTH_localDatabase];
   QDir databaseDir(path);
   QStringList dataFileList = databaseDir.entryList(nameFilter, QDir::Files, QDir::Unsorted);
   for (int i=0; i<dataFileList.count(); i++) dataFileList[i] = QString("%1/%2").arg(path).arg(dataFileList[i]);
@@ -352,7 +352,7 @@ bool SumTableView::getDataFiles(QString year)
     if (dataFileList[i].contains(QRegExp("/20\\d\\d.")))
     {
       availableFileNames.append(dataFileList[i]);
-      QString localFileName = QString(dataFileList[i]).replace(remoteDatabasePath, localDatabasePath);
+      QString localFileName = QString(dataFileList[i]).replace(pth.pathes[PTH_remoteDatabase], pth.pathes[PTH_localDatabase]);
       FileAccess file(localFileName);
       if ((adminKey == correctAdminKey) || // files are visible when registry contains admin key - no need to step into admin mode
           (file.key == appSettings.value(QString("keys/%1").arg(file.segmentName), "").toString()))
@@ -384,13 +384,13 @@ void SumTableView::getArchiveFiles(void)
 {
   archiveNames.clear();
   QStringList localFiles;
-  QStringList files(getFileList(archiveDatabasePath, "dat", true));
+  QStringList files(getFileList(pth.pathes[PTH_archiveDatabase], "dat", true));
   if (adminKey == correctAdminKey)
   { // check deleted remote files
-    localFiles = getFileList(localArchiveDatabasePath, "dat", true);
+    localFiles = getFileList(pth.pathes[PTH_localArchiveDatabase], "dat", true);
     for (int f=0; f<localFiles.count(); f++)
     {
-      QString localToRemote = QString(localFiles[f]).replace(localArchiveDatabasePath, archiveDatabasePath);
+      QString localToRemote = QString(localFiles[f]).replace(pth.pathes[PTH_localArchiveDatabase], pth.pathes[PTH_archiveDatabase]);
       if (!files.contains(localToRemote))
         Msg::log(MSG_ERROR, tr("%1 törölve lett az archívumból.").arg(localToRemote));
     }
@@ -404,7 +404,7 @@ void SumTableView::getArchiveFiles(void)
       archiveNames.append(files[f]);
       if (adminKey == correctAdminKey)
       { // check if archive files are modified
-        QString remoteToLocal = QString(localFiles[f]).replace(archiveDatabasePath, localArchiveDatabasePath);
+        QString remoteToLocal = QString(localFiles[f]).replace(pth.pathes[PTH_archiveDatabase], pth.pathes[PTH_localArchiveDatabase]);
         if (!QFile(remoteToLocal).exists())
         {
           if (QFile(files[f]).copy(remoteToLocal))

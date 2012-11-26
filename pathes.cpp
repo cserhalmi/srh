@@ -44,7 +44,7 @@ Pathes::Pathes()
   pathes[PTH_installer]            = pathes[PTH_remoteDatabase];
   pathes[PTH_archiveDatabase]      = QString("%1/archive").arg(pathes[PTH_remoteDatabase]);
 
-  pathes[PTH_working]              = QString("%1/CashFlow").arg(QDir::homePath());
+  pathes[PTH_working]              = appSettings.value("WorkingPath", "C:/CashFlow").toString().replace("\\", "/");
   pathes[FLE_settings]             = QString("%1/settings.txt").arg(pathes[PTH_working]);
   pathes[FLE_log]                  = QString("%1/log.txt").arg(pathes[PTH_working]);
   pathes[PTH_localDatabase]        = QString("%1/database").arg(pathes[PTH_working]);

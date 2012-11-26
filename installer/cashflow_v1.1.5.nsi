@@ -1,6 +1,10 @@
 !include "MUI.nsh"
 !include "Sections.nsh"
 !include "FileFunc.nsh"
+!insertmacro Locate
+ 
+Var /GLOBAL switch_overwrite
+!include "MoveFileFolder.nsh"
 
 ;--------------------------------
 ; Configuration
@@ -78,6 +82,7 @@ ${EndIf}
 Function .onInit
   StrCpy $version "1.1.5"
   StrCpy $qtversion "4.8.3"
+  StrCpy $switch_overwrite 0
   SetShellVarContext all
   ReadRegStr $0 HKCU "Software\CashFlow\ApplicationSettings" "DatabasePath"
   ReadRegStr $1 HKCU "Software\CashFlow\ApplicationSettings" "ApplicationPath"
@@ -124,15 +129,23 @@ Section "Alkalmazás"
   SetOutPath $appDir\icons
   File ..\icons\logo.ico
   File ..\icons\unlogo.ico
-  SetOutPath $appDir\database
+  SetOutPath $DOCUMENTS\CashFlow\database
   SetOverwrite ifnewer
   File ..\database\*.xlsm
   SetOverwrite on
   SetOutPath $appDir
   
+  SetShellVarContext current
+  ; working directory changed from 1.1.4 to 1.1.5
+  !insertmacro MoveFolder "$appDir\database\" "$APPDATA\CashFlow\database\" "*.dat"
+  !insertmacro MoveFolder "$appDir\database\" "$APPDATA\CashFlow\database\" "*.xlsm"
+  !insertmacro MoveFolder "$appDir\" "$APPDATA\CashFlow\" "*.txt"
+ 
   WriteRegStr HKCU "Software\CashFlow\ApplicationSettings" "ApplicationPath" $appDir
   WriteRegStr HKCU "Software\CashFlow\ApplicationSettings" "DatabasePath" $dataDir
+  WriteRegStr HKCU "Software\CashFlow\ApplicationSettings" "WorkingPath" "$APPDATA\CashFlow"
   WriteRegStr HKCU "Software\CashFlow\ApplicationSettings" "InstalledVersion" $version
+  SetShellVarContext all
   
   WriteUninstaller "$appDir\uninstall.exe"
   
