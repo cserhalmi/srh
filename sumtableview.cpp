@@ -378,11 +378,36 @@ bool SumTableView::getDataFiles(QString year)
 }
 
 //
+// cleans archive directory
+//
+void SumTableView::cleanArchiveDirectory(void)
+{
+  QDir archiveDir(pth.pathes[PTH_archiveDatabase]);
+  QString cDate = QString("%1_%2_%3")
+    .arg(QDate::currentDate().year())
+    .arg(QString("0%1").arg(QDate::currentDate().month()).right(2))
+    .arg(QString("0%1").arg(QDate::currentDate().day()).right(2));
+  QStringList dirs(archiveDir.entryList());
+  for (int d=0; d<dirs.count(); d++)
+  {
+    QString dirForDate = QString("%1/%2").arg(pth.pathes[PTH_archiveDatabase]).arg(dirs[d]);
+    if ((!dirForDate.contains(".")) &&
+        (!dirForDate.contains(cDate)))
+    {
+      QDir dir(dirForDate);
+      if (dir.rmdir(dirForDate))
+        Msg::log(MSG_INFO, QString("üres %1 eltávolítva").arg(dirForDate));
+    }
+  }
+}
+
+//
 // reads all archive files and a list for the selected year
 //
 void SumTableView::getArchiveFiles(void)
 {
   archiveNames.clear();
+  cleanArchiveDirectory();
   QStringList localFiles;
   QStringList files(getFileList(pth.pathes[PTH_archiveDatabase], "dat", true));
   if (adminKey == correctAdminKey)
@@ -395,6 +420,10 @@ void SumTableView::getArchiveFiles(void)
         Msg::log(MSG_ERROR, tr("%1 törölve lett az archívumból.").arg(localToRemote));
     }
   }
+  QString cDate = QString("%1_%2_%3")
+    .arg(QDate::currentDate().year())
+    .arg(QString("0%1").arg(QDate::currentDate().month()).right(2))
+    .arg(QString("0%1").arg(QDate::currentDate().day()).right(2));
   for (int f=0; f<files.count(); f++)
   {
     FileAccess fa(files[f]);
@@ -402,14 +431,21 @@ void SumTableView::getArchiveFiles(void)
          (fa.key == appSettings.value(QString("keys/%1").arg(fa.segmentName), "").toString())))
     {
       archiveNames.append(files[f]);
-      if (adminKey == correctAdminKey)
+      if ((adminKey == correctAdminKey) &&
+          (!files[f].contains(cDate)))
       { // check if archive files are modified
-        QString remoteToLocal = QString(localFiles[f]).replace(pth.pathes[PTH_archiveDatabase], pth.pathes[PTH_localArchiveDatabase]);
+        QString remoteToLocal = QString(files[f]).replace(pth.pathes[PTH_archiveDatabase], pth.pathes[PTH_localArchiveDatabase]);
+        QString localArchiveDir = QFileInfo(remoteToLocal).absolutePath();
         if (!QFile(remoteToLocal).exists())
         {
+          pth.createPath(localArchiveDir);
           if (QFile(files[f]).copy(remoteToLocal))
           {
             Msg::log(MSG_INFO, tr("%1 helyi másolata elkészült").arg(files[f]));
+          }
+          else
+          {
+            Msg::log(MSG_ERROR, tr("%1 ellenõrzõ archívumba másolása sikertelen").arg(files[f]));
           }
         }
         else
@@ -493,7 +529,7 @@ void SumTableView::synchroniseTables()
       }
       else
       {
-        Msg::log(MSG_WARNING, tr("%1 nem frissítheto").arg(tableViews.at(i)->tableModel->tableData->localFile));
+        Msg::log(MSG_WARNING, tr("%1 nem frissíthetõ").arg(tableViews.at(i)->tableModel->tableData->localFile));
       }
     }
     if (reloadRequired) forcedYearReload();

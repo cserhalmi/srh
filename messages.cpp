@@ -220,6 +220,13 @@ int Msg::question(msgType message, QStringList *textList)
     msgBox.setDefaultButton(QMessageBox::No);
   }
   break;
+  case MSG_ERRORINLOG:
+  {
+    msgBox.setText(tr("A napló fájl hiba bejegyzéseket tartalmaz."));
+    msgBox.setInformativeText(tr("Elküldi az adminisztrátornak?"));
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::No);
+  }
   default:
     break;
   }

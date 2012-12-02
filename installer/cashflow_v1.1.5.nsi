@@ -80,10 +80,10 @@ ${EndIf}
 ; Installer Sections
  
 Function .onInit
+  SetShellVarContext current
   StrCpy $version "1.1.5"
   StrCpy $qtversion "4.8.3"
   StrCpy $switch_overwrite 0
-  SetShellVarContext all
   ReadRegStr $0 HKCU "Software\CashFlow\ApplicationSettings" "DatabasePath"
   ReadRegStr $1 HKCU "Software\CashFlow\ApplicationSettings" "ApplicationPath"
   ReadRegStr $2 HKCU "Software\CashFlow\ApplicationSettings" "InstalledVersion"
@@ -119,7 +119,6 @@ SectionEnd
 Section "Alkalmazás"
   SectionIn 1 2 3
   SetOutPath $appDir
-  File "..\settings_temp.txt"
   File C:\QtSDK\Desktop\Qt\4.8.3\bin\QtGui4.dll
   File C:\QtSDK\Desktop\Qt\4.8.3\bin\QtNetwork4.dll
   File C:\QtSDK\Desktop\Qt\4.8.3\bin\QtCore4.dll
@@ -129,23 +128,32 @@ Section "Alkalmazás"
   SetOutPath $appDir\icons
   File ..\icons\logo.ico
   File ..\icons\unlogo.ico
-  SetOutPath $DOCUMENTS\CashFlow\database
+  SetOutPath $APPDATA\CashFlow
+  File "..\settings_temp.txt"
+  SetOutPath $APPDATA\CashFlow\database
   SetOverwrite ifnewer
   File ..\database\*.xlsm
   SetOverwrite on
   SetOutPath $appDir
   
-  SetShellVarContext current
   ; working directory changed from 1.1.4 to 1.1.5
-  !insertmacro MoveFolder "$appDir\database\" "$APPDATA\CashFlow\database\" "*.dat"
-  !insertmacro MoveFolder "$appDir\database\" "$APPDATA\CashFlow\database\" "*.xlsm"
-  !insertmacro MoveFolder "$appDir\" "$APPDATA\CashFlow\" "*.txt"
+  ${If} ${FileExists} `$appDir\database\*.dat`
+    !insertmacro MoveFolder "$appDir\database\" "$APPDATA\CashFlow\database\" "*.dat"
+  ${EndIf}
+  ${If} ${FileExists} `$appDir\database\*.xlsm`
+    !insertmacro MoveFolder "$appDir\database\" "$APPDATA\CashFlow\database\" "*.xlsm"
+  ${EndIf}
+  ${If} ${FileExists} `$appDir\*.txt`
+    !insertmacro MoveFolder "$appDir\" "$APPDATA\CashFlow\" "*.txt"
+  ${EndIf}
+  ${If} ${FileExists} `$appDir\export\*.*`
+    !insertmacro MoveFolder "$appDir\export\" "$APPDATA\CashFlow\export\" "*.*"
+  ${EndIf}
  
   WriteRegStr HKCU "Software\CashFlow\ApplicationSettings" "ApplicationPath" $appDir
   WriteRegStr HKCU "Software\CashFlow\ApplicationSettings" "DatabasePath" $dataDir
   WriteRegStr HKCU "Software\CashFlow\ApplicationSettings" "WorkingPath" "$APPDATA\CashFlow"
   WriteRegStr HKCU "Software\CashFlow\ApplicationSettings" "InstalledVersion" $version
-  SetShellVarContext all
   
   WriteUninstaller "$appDir\uninstall.exe"
   
@@ -159,6 +167,11 @@ SubSection /E "Hivatkozások"
   SectionEnd
   Section "Indító Menü" startupIconSection
     SectionIn 1 2 3
+    SetShellVarContext all
+    Delete "$SMPROGRAMS\CashFlow\CashFlow.lnk"
+    Delete "$SMPROGRAMS\CashFlow\Projektek.lnk"
+    Delete "$SMPROGRAMS\CashFlow\Uninstall.lnk"
+    SetShellVarContext current
     Delete "$SMPROGRAMS\CashFlow\CashFlow.lnk"
     Delete "$SMPROGRAMS\CashFlow\Projektek.lnk"
     Delete "$SMPROGRAMS\CashFlow\Uninstall.lnk"
@@ -180,7 +193,6 @@ SectionEnd
 ; Uninstaller Sections
  
 function un.onInit
-  SetShellVarContext all
   MessageBox MB_OKCANCEL "Eltávolítja a CashFlow alkalmazást?" IDOK next
     Abort
   next:
@@ -188,7 +200,16 @@ function un.onInit
 functionEnd
  
 section "uninstall"
+  SetShellVarContext all
   RMDir /r /REBOOTOK $INSTDIR 
+  RMDir /r /REBOOTOK "$APPDATA\CashFlow"
+  Delete "$DESKTOP\CashFlow.lnk"
+  Delete "$SMPROGRAMS\CashFlow\CashFlow.lnk"
+  Delete "$SMPROGRAMS\CashFlow\Projektek.lnk"
+  Delete "$SMPROGRAMS\CashFlow\Uninstall.lnk"
+  SetShellVarContext current
+  RMDir /r /REBOOTOK $INSTDIR 
+  RMDir /r /REBOOTOK "$APPDATA\CashFlow"
   Delete "$DESKTOP\CashFlow.lnk"
   Delete "$SMPROGRAMS\CashFlow\CashFlow.lnk"
   Delete "$SMPROGRAMS\CashFlow\Projektek.lnk"

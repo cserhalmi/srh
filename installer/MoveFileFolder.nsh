@@ -21,7 +21,7 @@
  
 	; Add message to details-view/install-log
  
-	    DetailPrint "Moving/renaming file: ${sourceFile} to ${destinationFile}"
+	    DetailPrint "Fájlok átnevezése/mozgatása: ${sourceFile} -> ${destinationFile}"
  
 	; If destination does not already exists simply move file
  
@@ -111,7 +111,7 @@
  
 	; Add message to details-view/install-log
  
-	    DetailPrint "Moving files: $R0\${mask} to $R1\"
+	    DetailPrint "Fájlok mozgatása: $R0\${mask} -> $R1\"
  
 	; Push registers used by ${Locate} onto stack
  

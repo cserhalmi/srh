@@ -59,6 +59,7 @@ private:
   bool                getDataFiles(QString year);
   void                getArchiveFiles(void);
   void                forcedYearReload();
+  void                cleanArchiveDirectory(void);
 
 private slots:
   void                updateCalendar(int);

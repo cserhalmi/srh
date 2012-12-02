@@ -4,6 +4,7 @@
 #include <QSettings>
 #include <QMessageBox>
 #include <QDebug>
+#include <QDate>
 
 static const int criticalPathCount = 4;
 static int critical[criticalPathCount] =
@@ -51,6 +52,7 @@ Pathes::Pathes()
   pathes[PTH_localArchiveDatabase] = QString("%1/archive").arg(pathes[PTH_localDatabase]);
   pathes[PTH_importExport]         = QString("%1/export").arg(pathes[PTH_working]);
 
+  pathes[PTH_installer].remove(QRegExp("/[^/]+$"));
   createUserPathes();
 }
 

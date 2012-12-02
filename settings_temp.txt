@@ -50,3 +50,9 @@ timer:autoRefresh                  = 120000
 import:column                      = 1
 import:Jutalék                     = 3
 import:Adók                        = 1
+
+#----------------------------------------------------------------
+# KAPCSOLAT
+# Az adminisztrátor elérhetõsége.
+#----------------------------------------------------------------
+contact:mail                       = katalin.tulipan@skc.hu

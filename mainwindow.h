@@ -55,6 +55,8 @@ private:
   void                createMenus(void);
   void                toggleAdminAccess(void);
   bool                userKeyInput(QString*, bool*);
+  void                checkErrorInLogFile();
+
 
   QMenu*              fileMenu;
   QMenu*              viewMenu;
@@ -91,6 +93,8 @@ private:
   QAction*            logWindowNoteAct;
   QAction*            appSettingsAct;
   QAction*            openExcelProjectAct;
+  QAction*            sendMailWithSettingsAct;
+  QAction*            sendMailWithLogAct;
 
 private slots:
   void                jumpActDate(void);
@@ -126,6 +130,8 @@ private slots:
   void                addDatabaseAccessKey();
   void                openExcelProject();
   void                showLog();
+  void                sendMailWithSettings();
+  void                sendMailWithLog();
   void                searchValue(bool, QString, QString, QDateTime, QDateTime, bool);
 
 public slots:

@@ -134,6 +134,7 @@ MainWindow::~MainWindow()
 {
   adminAccess = false; // always exit with admin mode off
   saveStatus();
+  checkErrorInLogFile();
 
   delete searchWindow;
   delete userNameLabel;
@@ -150,6 +151,21 @@ MainWindow::~MainWindow()
 ///////////////////////////////////////////////////////////////////////////////
 // PRIVATE MEMBERS
 ///////////////////////////////////////////////////////////////////////////////
+
+void MainWindow::checkErrorInLogFile()
+{
+  FileAccess file(pth.pathes[FLE_log]);
+  QByteArray ba;
+  if (file.read())
+  {
+    file.get(ba);
+    if (ba.contains("<font color=\"red\">"))
+    {
+      if (Msg::pshow(MSG_QUESTION, MSG_ERRORINLOG) == QMessageBox::Yes)
+        mail->provideMailToSend(pth.pathes[FLE_log]);
+    }
+  }
+}
 
 //
 // create complete path if not available or send error
@@ -482,6 +498,19 @@ void MainWindow::createActions()
   showVersionAct->setShortcut(QKeySequence("V"));
   showVersionAct->setStatusTip(tr("Program verzió megjelenítése"));
   connect(showVersionAct, SIGNAL(triggered()), this, SLOT(showVersion()));
+
+  showVersionAct = new QAction(tr("Verzió"), this);
+  showVersionAct->setShortcut(QKeySequence("V"));
+  showVersionAct->setStatusTip(tr("Program verzió megjelenítése"));
+  connect(showVersionAct, SIGNAL(triggered()), this, SLOT(showVersion()));
+
+  sendMailWithSettingsAct = new QAction(tr("Beállítások küldése"), this);
+  sendMailWithSettingsAct->setStatusTip(tr("Beállítások küldése az adminisztrátor e-mail címére"));
+  connect(sendMailWithSettingsAct, SIGNAL(triggered()), this, SLOT(sendMailWithSettings()));
+
+  sendMailWithLogAct = new QAction(tr("Napló küldése"), this);
+  sendMailWithLogAct->setStatusTip(tr("Napló küldése az adminisztrátor e-mail címére"));
+  connect(sendMailWithLogAct, SIGNAL(triggered()), this, SLOT(sendMailWithLog()));
   //--------
 }
 
@@ -531,6 +560,10 @@ void MainWindow::createMenus()
   helpMenu = menuBar()->addMenu(tr("&Segítség"));
   helpMenu->addAction(showHelpAct);
   helpMenu->addAction(showVersionAct);
+  helpMenu->addSeparator();
+  helpMenu->addAction(sendMailWithSettingsAct);
+  helpMenu->addAction(sendMailWithLogAct);
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -969,6 +1002,16 @@ void MainWindow::showVersion(void)
 {
   splash->message(QString("<b><font color=black>CashFlow %1</font><br><br><small><small>Cserhalmi György 2o12</small></small></b>").arg(installedVersion), true);
   splash->finish();
+}
+
+void MainWindow::sendMailWithSettings(void)
+{
+  mail->provideMailToSend(pth.pathes[FLE_settings]);
+}
+
+void MainWindow::sendMailWithLog(void)
+{
+  mail->provideMailToSend(pth.pathes[FLE_log]);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -58,6 +58,7 @@ int             autoRefresh;
 TextEdit*       settingsWindow;
 TextEdit*       logWindow;
 TextEdit*       tableEditWindow;
+Mail*           mail;
 
 __declspec(dllimport) int qt_ntfs_permission_lookup;
 
@@ -89,11 +90,7 @@ QString getUserName(void)
 
 void checkNextVersion(void)
 {
-  installedVersion      = appSettings.value("InstalledVersion", "1.0.0").toString();
-  pth.pathes[PTH_application]       = appSettings.value("ApplicationPath", "C:/Program Files/CashFlow").toString().replace("\\", "/");
-  pth.pathes[PTH_remoteDatabase]    = appSettings.value("DatabasePath", "L:/CashFlow/database").toString().replace("\\", "/");
-  pth.pathes[PTH_installer]         = pth.pathes[PTH_remoteDatabase];
-  pth.pathes[PTH_installer].remove(QRegExp("/[^/]+$"));
+  installedVersion = appSettings.value("InstalledVersion", "1.0.0").toString();
   QStringList nameFilter;
   nameFilter << "cashflow_v*.exe";
   QDir databaseDir(pth.pathes[PTH_installer]);
@@ -177,6 +174,7 @@ int main(int argc, char *argv[])
   checkNextVersion();
   if (pth.checkPathes())
   {
+    mail = new Mail(&app);
     mergeSettings();
     splash = new SplashScreen(desktop);
     splash->setUpdatesEnabled(false);

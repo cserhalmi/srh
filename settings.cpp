@@ -56,6 +56,7 @@ void Settings::setSettings(void)
   checkRemote      = Math::limit(getSetting("timer", "checkRemote", "1000").toInt(), 100, 60000);
   autoRefresh      = Math::limit(getSetting("timer", "autoRefresh", "60000").toInt(), 30000, 600000)/1000;
 
+  mail->adminMail = getSetting("contact", "mail", "recipient@mail.dom");
   cursorActiveColorString = getSetting("color", "activeCursor", "rgb(160,160,255,255)");
   getRGBFromString(cursorActiveColorString, rgb);
   cursorActiveColor = QColor(rgb[0], rgb[1], rgb[2], rgb[3]);

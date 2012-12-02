@@ -4,6 +4,7 @@
 #include "splashscreen.h"
 #include "textedit.h"
 #include "pathes.h"
+#include "mail.h"
 #include <QString>
 #include <QSettings>
 #include <QDesktopWidget>
@@ -35,6 +36,7 @@ extern Pathes          pth;
 extern SplashScreen*   splash;
 extern QDesktopWidget* desktop;
 extern QTextBrowser*   logBox;
+extern Mail*           mail;
 extern QString         userName;
 extern QString         installedVersion;
 extern QString         adminKey;

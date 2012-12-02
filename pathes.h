@@ -28,12 +28,12 @@ public:
   QStringList pathes;
   bool checkPathes(void);
   QString getLog(void);
+  void createPath(QString path);
 
 private:
   bool pathesAreOk;
 
   void createUserPathes(void);
-  void createPath(QString path);
 
 };
 

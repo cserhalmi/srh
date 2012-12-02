@@ -270,13 +270,14 @@ void TableData::checkData(void)
   {
     for (int r=0; r<rows; r++)
     {
-      if(!data.at(r).at(c).isEmpty())
+      if((!data.at(r).at(c).isEmpty()) &&
+         (data.at(r).at(c) != "~"))
       {
         QString euser;
         QString evalue;
         QString edatejulian;
-        if (!getValueProperties(r, c, edatejulian, evalue, euser)) Msg::log(MSG_ERROR, tr("adatbázis hiba - nincs bejegyzés az értékhez (%1,%2) cellában").arg(r).arg(c));
-        if (evalue != data[r][c]) Msg::log(MSG_ERROR, tr("adatbázis hiba - (%1,%2) cella utolsó bejegyzése nem egyezik az értékkel (%3)").arg(r).arg(c).arg(evalue));
+        if (!getValueProperties(r, c, edatejulian, evalue, euser)) Msg::log(MSG_ERROR, tr("%1 hiba - nincs bejegyzés az értékhez (%2,%3) cellában").arg(r).arg(c).arg(localFile));
+        else if (evalue != data[r][c]) Msg::log(MSG_ERROR, tr("%1 hiba - (%2,%3) cella utolsó bejegyzése nem egyezik az értékkel (%3)").arg(r).arg(c).arg(evalue).arg(localFile));
       }
     }
   }
